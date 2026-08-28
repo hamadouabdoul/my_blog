@@ -14,3 +14,8 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('autor', 'added_at', 'content', 'show')
     list_filter = ('show', 'added_at', 'autor')
     search_fields = ('autor',)
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('content', 'added_at')
+    list_filter = ('added_at',)

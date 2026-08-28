@@ -25,3 +25,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.added_at}"
+
+class Review(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    content = models.TextField()
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.added_at}"
