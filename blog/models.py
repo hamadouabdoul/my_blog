@@ -15,4 +15,13 @@ class Poste(models.Model):
     def __str__(self):
         return f"{self.title}"
 
-    
+class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    autor = models.EmailField()
+    content = models.TextField()
+    added_at = models.DateTimeField(auto_now_add=True)
+    show = models.BooleanField(default=True)
+    poste = models.ForeignKey(Poste, on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return f"{self.added_at}"
