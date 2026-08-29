@@ -1,0 +1,33 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block title %} Blog {% endblock %}
+
+{% block content %}
+
+<div>
+    <div>
+        <div><img src="{{ poste.image.url }}" alt="image du blog"></div>
+    </div>
+</div>
+
+<div>
+
+    <div>{{ poste.title }} </div>
+    <p>{{ poste.created_at }} </p>
+</div>
+
+<pre>
+    {{ poste.content }}
+</pre>
+
+<h2>Autres article</h2>
+    {% for poste in postes %}
+    <div>
+        <div><img src="{{ poste.image.url }}" alt="image du blog"></div>
+        <div>{{ poste.title }} </div>
+        <p>{{ poste.created_at }} </p>
+    </div>
+    {% endfor %}
+
+{% endblock %}

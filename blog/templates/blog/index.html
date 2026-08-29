@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block title %}Acceui {% endblock %}
+
+{% block content %}
+<div>
+    <img src="{% static 'images/banner.jpeg' %}" alt="bannière">
+</div>
+
+<h1>Bienvenue sur mon Blog</h1>
+<p>Je suis Abdoul Wahid</p>
+<h2>Nos derniers articles</h2>
+<div>
+    {% for poste in postes %}
+    <div>
+        <div><img src="{{ poste.image.url }}" alt="image du blog"></div>
+        <div>{{ poste.title }} </div>
+        <p>{{ poste.created_at }} </p>
+    </div>
+    {% endfor %}
+    <button><a href="{% url 'blog' %}">Tous les articles</a></button>
+</div>
+
+{% endblock %}
