@@ -1,24 +1,175 @@
 {% extends "blog/base.html" %}
 {% load static %}
-{% block title %}Acceui {% endblock %}
+
+{% block title %}Accueil — Wahid DEV Blog{% endblock %}
 
 {% block content %}
-<div>
-    <img src="{% static 'images/banner.jpeg' %}" alt="bannière">
-</div>
 
-<h1>Bienvenue sur mon Blog</h1>
-<p>Je suis Abdoul Wahid</p>
-<h2>Nos derniers articles</h2>
-<div>
-    {% for poste in postes %}
-    <div>
-        <div><img src="{{ poste.image.url }}" alt="image du blog"></div>
-        <div>{{ poste.title }} </div>
-        <p>{{ poste.created_at }} </p>
-    </div>
-    {% endfor %}
-    <button><a href="{% url 'blog' %}">Tous les articles</a></button>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+    <!-- HERO FEATURED POST (À LA UNE - Conforme Maquette poste.jpeg) -->
+    {% if postes %}
+    {% with featured=postes.0 %}
+    <section class="relative rounded-3xl overflow-hidden shadow-2xl bg-slate-900 group min-h-[440px] md:min-h-[500px] flex items-end">
+        <!-- Background Image with Overlay -->
+        {% if featured.image %}
+        <img src="{{ featured.image.url }}" alt="{{ featured.title }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-60">
+        {% else %}
+        <img src="{% static 'images/banner.jpeg' %}" alt="Image à la une" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-60">
+        {% endif %}
+        
+        <!-- Gradient Vignette overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent"></div>
+
+        <!-- Content Overlay -->
+        <div class="relative z-10 p-6 sm:p-10 md:p-14 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="space-y-3 max-w-3xl">
+                <!-- Badge Category -->
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-500 text-white tracking-wide uppercase shadow-sm">
+                        À la une
+                    </span>
+                    <span class="text-xs text-slate-300 flex items-center gap-1 font-medium">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        5 min de lecture
+                    </span>
+                </div>
+
+                <!-- Title -->
+                <h1 class="text-2xl sm:text-4xl md:text-5xl font-extrabold font-display text-white leading-tight tracking-tight drop-shadow-md">
+                    <a href="{% url 'poste' featured.slug %}" class="hover:text-brand-200 transition-colors">
+                        {{ featured.title }}
+                    </a>
+                </h1>
+
+                <!-- Summary snippet -->
+                <p class="text-slate-300 text-sm sm:text-base line-clamp-2 leading-relaxed">
+                    {{ featured.content|truncatewords:28 }}
+                </p>
+
+                <!-- Author Meta -->
+                <div class="flex items-center gap-3 pt-2">
+                    <div class="w-10 h-10 rounded-full bg-brand-500 border-2 border-white/80 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        W
+                    </div>
+                    <div class="text-xs">
+                        <p class="font-semibold text-white">Wahid DEV</p>
+                        <p class="text-slate-400">{{ featured.created_at|date:"d F Y" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow Action Button -->
+            <div class="hidden md:flex">
+                <a href="{% url 'poste' featured.slug %}" 
+                   class="w-16 h-16 rounded-full bg-white/10 hover:bg-brand-500 backdrop-blur-md border border-white/20 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-all duration-300" 
+                   aria-label="Lire l'article complet">
+                    <svg class="w-7 h-7 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    {% endwith %}
+    {% endif %}
+
+    <!-- RECENT ARTICLES GRID (Derniers articles du blog) -->
+    <section class="space-y-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200/80 pb-5">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-extrabold font-display text-slate-900 tracking-tight">
+                    Derniers articles du blog
+                </h2>
+                <p class="text-slate-500 text-sm mt-1">Découvrez nos analyses, guides et retours d'expérience les plus récents.</p>
+            </div>
+            <a href="{% url 'blog' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-500 hover:text-brand-600 transition-colors">
+                Voir tous les articles 
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for item in postes %}
+            <article class="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+                <!-- Card Image Header -->
+                <a href="{% url 'poste' item.slug %}" class="relative aspect-video w-full overflow-hidden bg-slate-100 block">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                    <img src="{% static 'images/banner.jpeg' %}" alt="Image du blog" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    {% endif %}
+                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-brand-600 font-semibold text-[11px] px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                        Tech & Design
+                    </span>
+                </a>
+
+                <!-- Card Body -->
+                <div class="p-6 flex flex-col flex-grow space-y-3">
+                    <h3 class="text-xl font-bold font-display text-slate-900 group-hover:text-brand-500 transition-colors leading-snug line-clamp-2">
+                        <a href="{% url 'poste' item.slug %}">
+                            {{ item.title }}
+                        </a>
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3 flex-grow">
+                        {{ item.content|truncatewords:20 }}
+                    </p>
+
+                    <!-- Card Author Footer -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 mt-auto">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs">
+                                W
+                            </div>
+                            <span class="font-medium text-slate-700">Wahid DEV</span>
+                        </div>
+                        <time datetime="{{ item.created_at|date:'Y-m-d' }}">{{ item.created_at|date:"d M Y" }}</time>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200">
+                <p class="text-slate-500">Aucun article n'a encore été publié pour le moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center pt-6">
+            <a href="{% url 'blog' %}" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-slate-900 hover:bg-brand-500 text-white font-semibold text-sm transition-all shadow-lg hover:shadow-brand-500/25">
+                Découvrir plus d'articles
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- BANNIÈRE CTA SOMBRE (Conforme Maquette poste.jpeg Bottom Banner) -->
+    <section class="relative bg-dark-bg rounded-3xl p-8 sm:p-12 md:p-16 text-center overflow-hidden border border-slate-800 shadow-2xl">
+        <!-- Glow accents -->
+        <div class="absolute -top-24 -left-24 w-72 h-72 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-72 h-72 bg-accent-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-2xl mx-auto space-y-6">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-display text-white tracking-tight leading-tight">
+                Construisons quelque chose de grand ensemble
+            </h2>
+            <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+                Rejoignez plus de <span class="text-accent-500 font-bold">4,000+ passionnés</span> qui suivent nos contenus sur le développement web, l'UX design et l'écosystème Python Django.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <a href="https://wa.me/+22791334383" target="_blank" rel="noopener"
+                   class="w-full sm:w-auto px-8 py-4 rounded-full bg-accent-500 hover:bg-accent-600 text-white font-bold text-sm tracking-wide shadow-lg shadow-accent-500/25 transition-all">
+                    Discuter sur WhatsApp
+                </a>
+                <a href="https://www.youtube.com/channel/UCudwCwO6e7dnKPf5Yb-IzTQ" target="_blank" rel="noopener"
+                   class="w-full sm:w-auto px-8 py-4 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm tracking-wide border border-slate-700 transition-all">
+                    Découvrir la chaîne YouTube
+                </a>
+            </div>
+        </div>
+    </section>
+
 </div>
 
 {% endblock %}

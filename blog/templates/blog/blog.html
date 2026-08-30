@@ -1,19 +1,80 @@
 {% extends "blog/base.html" %}
 {% load static %}
 
-{% block title %} Blog {% endblock %}
+{% block title %}Tous les Articles — Wahid DEV Blog{% endblock %}
 
 {% block content %}
-<h1>Tous les articles</h1>
-<div>
-    {% for poste in postes %}
-    <a href="{% url 'poste' poste.slug %}">
-        <div>
-            <div><img src="{{ poste.image.url }}" alt="image du blog"></div>
-            <div>{{ poste.title }} </div>
-            <p>{{ poste.created_at }} </p>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+
+    <!-- Header Section -->
+    <div class="text-center max-w-3xl mx-auto space-y-4">
+        <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold bg-brand-100 text-brand-700 tracking-wide uppercase">
+            Bibliothèque de contenus
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-slate-900 tracking-tight">
+            Explorez tous nos articles
+        </h1>
+        <p class="text-slate-600 text-base sm:text-lg">
+            Retrouvez tous nos guides pratiques, tutoriels et réflexions sur le développement web, l'UX design et l'écosystème Python Django.
+        </p>
+
+        <!-- Category Filters Pill Bar -->
+        <div class="flex flex-wrap items-center justify-center gap-2 pt-4">
+            <button class="px-4 py-2 rounded-full bg-brand-500 text-white font-medium text-xs shadow-sm transition-all">Tous</button>
+            <button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs border border-slate-200 transition-all">Design UX/UI</button>
+            <button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs border border-slate-200 transition-all">Python & Django</button>
+            <button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs border border-slate-200 transition-all">Architecture API</button>
+            <button class="px-4 py-2 rounded-full bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs border border-slate-200 transition-all">Productivité</button>
         </div>
-    </a>
-    {% endfor %}
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for item in postes %}
+        <article class="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
+            <!-- Card Image -->
+            <a href="{% url 'poste' item.slug %}" class="relative aspect-video w-full overflow-hidden bg-slate-100 block">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {% else %}
+                <img src="{% static 'images/banner.jpeg' %}" alt="Image du blog" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                {% endif %}
+                <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-brand-600 font-semibold text-[11px] px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                    Article
+                </span>
+            </a>
+
+            <!-- Card Body -->
+            <div class="p-6 flex flex-col flex-grow space-y-3">
+                <h2 class="text-xl font-bold font-display text-slate-900 group-hover:text-brand-500 transition-colors leading-snug line-clamp-2">
+                    <a href="{% url 'poste' item.slug %}">
+                        {{ item.title }}
+                    </a>
+                </h2>
+                <p class="text-slate-600 text-sm leading-relaxed line-clamp-3 flex-grow">
+                    {{ item.content|truncatewords:22 }}
+                </p>
+
+                <!-- Card Author Footer -->
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 mt-auto">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center text-xs">
+                            W
+                        </div>
+                        <span class="font-medium text-slate-700">Wahid DEV</span>
+                    </div>
+                    <time datetime="{{ item.created_at|date:'Y-m-d' }}">{{ item.created_at|date:"d M Y" }}</time>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-slate-200">
+            <p class="text-slate-500 text-base">Aucun article n'a encore été publié.</p>
+        </div>
+        {% endfor %}
+    </div>
+
 </div>
+
 {% endblock %}
